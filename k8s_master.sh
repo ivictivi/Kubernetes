@@ -1,4 +1,4 @@
-sudo su  
+#!/bin/bash
 
 setenforce 0
 
