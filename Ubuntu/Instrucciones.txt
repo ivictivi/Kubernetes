@@ -1,0 +1,6 @@
+# Errores comunes
+Al instalar pueden ocurrir estos errores:
+1. [ERROR Swap]: running with swap on is not supported. Please disable swap
+  --> Lo he corregido haciendo un swapoff -a
+2. [WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+  --> Lo he corregido siguiendo los pasos de: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker
