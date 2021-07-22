@@ -5,13 +5,8 @@ if [[ "$EUID" = 0 ]]; then
     echo "[INFO] EJECUTANDO COMO ROOT"
     node_config
 else
-    sudo -k # make sure to ask for password on next sudo
-    if sudo true; then
-        echo "[INFO] EJECUTANDO COMO ROOT"
-        node_config
-    else
-        echo "[ERROR] ECUTANDO COMO NO ROOT"
-        exit 1
+    echo "[ERROR] EJECUTANDO COMO NO ROOT"
+    exit 1
     fi
 fi
 
