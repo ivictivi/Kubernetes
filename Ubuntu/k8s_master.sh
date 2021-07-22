@@ -14,35 +14,35 @@ fi
 
 node_config () {
     ##### Disable Firewall
-    ufw disable
+    sudo ufw disable
     ##### Disable swap
-    swapoff -a; sed -i '/swap/d' /etc/fstab
+    sudo swapoff -a; sed -i '/swap/d' /etc/fstab
     ##### Update sysctl settings for Kubernetes networking
-    cat >>/etc/sysctl.d/kubernetes.conf<<EOF
+    sudo cat >>/etc/sysctl.d/kubernetes.conf<<EOF
     net.bridge.bridge-nf-call-ip6tables = 1
     net.bridge.bridge-nf-call-iptables = 1
 EOF
-    sysctl --system
+    sudo sysctl --system
     ##### Install docker engine
-    apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-    apt update
-    apt install -y docker-ce=5:19.03.10~3-0~ubuntu-focal containerd.io
+    sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    sudo apt update
+    sudo apt install -y docker-ce=5:19.03.10~3-0~ubuntu-focal containerd.io
 
     ### Kubernetes Setup
     ##### Add Apt repository
-    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+    sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+    sudo echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
 
     ##### Install Kubernetes components
-    apt update && apt install -y kubeadm=1.18.5-00 kubelet=1.18.5-00 kubectl=1.18.5-00
+    sudo apt update && apt install -y kubeadm=1.18.5-00 kubelet=1.18.5-00 kubectl=1.18.5-00
 
     ##### In case you are using LXC containers for Kubernetes nodes
-    mknod /dev/kmsg c 1 11
-    echo '#!/bin/sh -e' >> /etc/rc.local
-    echo 'mknod /dev/kmsg c 1 11' >> /etc/rc.local
-    chmod +x /etc/rc.local
+    sudo mknod /dev/kmsg c 1 11
+    sudo echo '#!/bin/sh -e' >> /etc/rc.local
+    sudo echo 'mknod /dev/kmsg c 1 11' >> /etc/rc.local
+    sudo chmod +x /etc/rc.local
     check_node
 }
 
@@ -69,13 +69,13 @@ done
 master_config () {
     ## On kmaster
     ##### Initialize Kubernetes Cluster
-    kubeadm init --apiserver-advertise-address=172.16.16.100 --pod-network-cidr=192.168.0.0/16  --ignore-preflight-errors=all
+    sudo kubeadm init --apiserver-advertise-address=192.168.1.240 --pod-network-cidr=10.99.0.0/16  --ignore-preflight-errors=all
 
     ##### Deploy Calico network
-    kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://docs.projectcalico.org/v3.14/manifests/calico.yaml
+    sudo kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://docs.projectcalico.org/v3.14/manifests/calico.yaml
 
     ##### Cluster join command
-    kubeadm token create --print-join-command
+    sudo kubeadm token create --print-join-command
 
     ##### To be able to run kubectl commands as non-root user
     #mkdir -p $HOME/.kube
@@ -86,11 +86,6 @@ master_config () {
 worker_config () {
     echo "[INFO] Introduce el token generado en el Master"
 }
-
-
-
-
-
 
 ## EJECUCIOn
 main
