@@ -7,7 +7,6 @@ if [[ "$EUID" = 0 ]]; then
 else
     echo "[ERROR] EJECUTANDO COMO NO ROOT"
     exit 1
-    fi
 fi
 
 }
